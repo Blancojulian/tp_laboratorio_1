@@ -6,6 +6,10 @@
  */
 #include "menu.h"
 
+/*
+ * \ brief - Muestra menu al usuario y recibe la opcion elegida.
+ * \ return - void.
+ */
 void showMenu()
 {
     int option;
@@ -148,7 +152,16 @@ void showMenu()
     printf("\nAdios");
 }
 
-
+/*
+ * \ brief - Muestra submenu de aerolineas al usuario y recibe la opcion elegida.
+ * \ param - float* priceAerolinea, Puntero al espacio de memoria donde se dejara el valor obtenido.
+ * \ param - float* priceLatam, Puntero al espacio de memoria donde se dejara el valor obtenido.
+ * \ param - int* flagAerolinea, Puntero al espacio de memoria donde se cambiara el valor de la bandera.
+ * \ param - int* flagLatam, Puntero al espacio de memoria donde se cambiara el valor de la bandera.
+ * \ param - int* flagCalculosAerolinea, Puntero al espacio de memoria donde se cambiara el valor de la bandera.
+ * \ param - int* flagCalculosLatam, Puntero al espacio de memoria donde se cambiara el valor de la bandera.
+ * \ return - void.
+ */
 void showMenuAerolineas(float* priceAerolinea, float* priceLatam, int* flagAerolinea, int* flagLatam, int* flagCalculosAerolinea, int* flagCalculosLatam)
 {
     //int retorno;
