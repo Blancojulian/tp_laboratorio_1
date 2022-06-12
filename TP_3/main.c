@@ -79,7 +79,7 @@ int main()
 					}
 	            	break;
 	            case 8:
-	            	if(controller_saveAsText("data2.csv", listPassenger) == 0)
+	            	if(controller_saveAsText("data.csv", listPassenger) == 0)
 					{
 						printf("Los datos se guardaron correctamente en el archivo de texto.\n");
 					}
