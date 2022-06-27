@@ -156,7 +156,7 @@ int controller_removePassenger(LinkedList* pArrayListPassenger)
 		controller_ListPassenger(pArrayListPassenger);
 		if(Passenger_findMaxId(pArrayListPassenger, &maxId) == 0 &&
 			utn_getNumberInt(&id ,"Ingrese el ID del pasajero a eliminar: ", "ID invalido.\n", 1, (maxId - 1), CANT_REINTENTOS) == 0 &&
-			Passenger_findById(pArrayListPassenger, id, &index))
+			Passenger_findById(pArrayListPassenger, id, &index) == 0)
 		{
 			auxPassenger = (Passenger*)ll_get(pArrayListPassenger, index);
 			if(auxPassenger != NULL)
