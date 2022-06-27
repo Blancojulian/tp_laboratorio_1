@@ -277,6 +277,7 @@ int utn_getText(char *pResultado, char *mensaje, char *mensajeError, int reinten
 	return retorno;
 }
 
+//Se agrego mas caracteres ya que los nombres en data.csv vienen con estos
 /*
  * \ brief - Verifica una cadena recibida como parametro para determinar
  * 	         si es un nombre valido.
@@ -292,9 +293,11 @@ int isName(char* cadena, int len)
 
     while(cadena[i] != '\0' && i < len)
     {
-        if((cadena[i] < 'A' || cadena[i] > 'Z' ) &&
-			(cadena[i] < 'a' || cadena[i] > 'z' ) &&
-			cadena[i] != 'ñ' && cadena[i] != 'Ñ')
+        if((cadena[i] < 'A' || cadena[i] > 'Z' ) && (cadena[i] < 'a' || cadena[i] > 'z' ) &&
+			cadena[i] != 'ñ' && cadena[i] != 'Ñ' && cadena[i] != 'á' && cadena[i] != 'é' &&
+			cadena[i] != 'í' && cadena[i] != 'ó' && cadena[i] != 'ú' && cadena[i] != 'Á' &&
+			cadena[i] != 'É' && cadena[i] != 'Í' && cadena[i] != 'Ó' && cadena[i] != 'Ú' &&
+			cadena[i] != ' ' && cadena[i] != '-')
         {
             retorno = 0;
             break;
@@ -364,7 +367,7 @@ int isFlyCode(char* cadena, int len)
     {
         cadena[i] = toupper(cadena[i]);
 		if(( (i <= 1 || i == 6) && (cadena[i] < 'A' || cadena[i] > 'Z') ) ||
-    	    ( (i >= 2 || i <= 5) && (cadena[i] < '0' || cadena[i] > '9')))
+    	    ( (i >= 2 && i <= 5) && (cadena[i] < '0' || cadena[i] > '9')))
         {
             retorno = 0;
             break;

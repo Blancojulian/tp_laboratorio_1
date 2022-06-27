@@ -21,9 +21,12 @@ int controller_loadFromText(char* path , LinkedList* pArrayListPassenger)
 	int retorno = -1;
 
 	FILE* pFile;
+
 	if(path != NULL && pArrayListPassenger != NULL)
 	{
+
 		pFile = fopen(path,"r");
+
 		if(pFile != NULL && !(parser_PassengerFromText(pFile, pArrayListPassenger)))
 		{
 			retorno = 0;
@@ -49,7 +52,7 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListPassenger)
 	int retorno = -1;
 
 	FILE* pFile;
-	if(path != NULL && pArrayListPassenger != NULL)
+	if(path != NULL && pArrayListPassenger != NULL)// && ll_clear(pArrayListPassenger) == 0)
 	{
 		pFile = fopen(path,"rb");
 		if(pFile != NULL && !(parser_PassengerFromBinary(pFile, pArrayListPassenger)))
@@ -102,6 +105,7 @@ int controller_addPassenger(LinkedList* pArrayListPassenger)
 int controller_editPassenger(LinkedList* pArrayListPassenger)
 {
 	int retorno = -1;
+	Passenger* pPassenger;
 	Passenger* auxPassenger;
 
 	int id;
@@ -115,10 +119,13 @@ int controller_editPassenger(LinkedList* pArrayListPassenger)
 			utn_getNumberInt(&id ,"Ingrese el ID del pasajero a modificar: ", "ID invalido.\n", 0, (maxId - 1), CANT_REINTENTOS) == 0 &&
 			Passenger_findById(pArrayListPassenger, id, &index) == 0)
 		{
-			auxPassenger = (Passenger*)ll_get(pArrayListPassenger, index);
-			if(auxPassenger != NULL && Passenger_modifyPassenger(auxPassenger) == 0)
+			pPassenger = (Passenger*)ll_get(pArrayListPassenger, index);
+			auxPassenger = (Passenger*)Passenger_modifyPassenger(pPassenger);
+
+			if(auxPassenger != NULL)// && Passenger_modifyPassenger(auxPassenger) == 0)
 			{
-				retorno = 0;
+				Passenger_delete(pPassenger);
+				retorno = ll_set(pArrayListPassenger, index, auxPassenger);
 			}
 			else
 			{
@@ -207,14 +214,55 @@ int controller_sortPassenger(LinkedList* pArrayListPassenger)
 {
 	int retorno = -1;
 	int orden;
+	int option;
 
-	if(pArrayListPassenger != NULL)
+	if(pArrayListPassenger != NULL &&
+			utn_getNumberInt(&option, "\n1) Ordenar por Id\n2) Ordenar por Nombre"
+					"\n3) Ordenar por Apellido\n4) Ordenar por precio"
+					"\n5) Ordenar por codigo de vuelo\n6) Ordenar por tipo de pasajero"
+					"\n7) Ordenar por estado de vuelo\nIngrese el orden: ", "Orden incorrecto.\n", 1, 7, CANT_REINTENTOS) == 0 &&
+			utn_getNumberInt(&orden, "1) Descendente\n2) Ascendente\nIngrese el orden: ", "Orden incorrecto.\n", 1, 2, CANT_REINTENTOS) == 0)
 	{
-		if( utn_getNumberInt(&orden, "0) Ascendente\n1) 0) Descendente\nIngrese el orden: ", "Orden incorrecto.\n", 0, 1, CANT_REINTENTOS) == 0 &&
-			ll_sort(pArrayListPassenger, Passenger_funcionCriterioNombre, orden) == 0)
+		orden--;
+		switch(option)
 		{
-			retorno = 0;
+			case 1:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioId, orden) == 0){
+					retorno = 0;
+				}
+				break;
+			case 2:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioNombre, orden) == 0){
+					retorno = 0;
+				}
+				break;
+			case 3:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioApellido, orden) == 0){
+					retorno = 0;
+				}
+				break;
+			case 4:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioPrecio, orden) == 0){
+					retorno = 0;
+				}
+				break;
+			case 5:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioCodigoVuelo, orden) == 0){
+					retorno = 0;
+				}
+				break;
+			case 6:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioTipoPasajero, orden) == 0){
+					retorno = 0;
+				}
+				break;
+			case 7:
+				if(ll_sort(pArrayListPassenger, Passenger_funcionCriterioEstadoVuelo, orden) == 0){
+					retorno = 0;
+				}
+				break;
 		}
+
 	}
 	return retorno;
 }
@@ -308,4 +356,5 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListPassenger)
 
 	return retorno;
 }
+
 

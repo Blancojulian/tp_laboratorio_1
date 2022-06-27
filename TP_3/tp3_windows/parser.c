@@ -3,6 +3,7 @@
 #include "LinkedList.h"
 #include "Passenger.h"
 #include "parser.h"
+#define LEN_BUFFER_STR 4096
 
 /** \brief Parsea los datos los datos de los pasajeros desde el archivo data.csv (modo texto).
  *
@@ -16,23 +17,27 @@ int parser_PassengerFromText(FILE* pFile , LinkedList* pArrayListPassenger)
 	int retorno = -1;
 	Passenger* auxPassenger;
 	int r;
-	//float var4;
-	char var1[4096], var2[4096], var3[4096], var4[4096], var5[4096], var6[4096], var7[4096];
+
+	char id[LEN_BUFFER_STR];
+	char nombre[LEN_BUFFER_STR];
+	char apellido[LEN_BUFFER_STR];
+	char precio[LEN_BUFFER_STR];
+	char codigoVuelo[LEN_BUFFER_STR];
+	char tipoPasajero[LEN_BUFFER_STR];
+	char estadoVuelo[LEN_BUFFER_STR];
 
 	if(pFile != NULL && pArrayListPassenger != NULL)
 	{
 		do
 		{
-			//,%[^\n]
-			//id,name,lastname,price,flycode,typePassenger,statusFlight
-			r = fscanf(pFile,"%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]\n", var1, var2, var3, var4, var5, var6, var7);
-			//Passenger_newParametros(char* idStr, char* nombreStr, char* apellidoStr, float precio, char* codigoVuelo, char* tipoPasajeroStr)
+			r = fscanf(pFile,"%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]\n", id, nombre, apellido, precio, codigoVuelo, tipoPasajero, estadoVuelo);
 
-			auxPassenger = Passenger_newParametros(var1, var2, var3, var4, var5, var6, var7);
+			auxPassenger = Passenger_newParametros(id, nombre, apellido, precio, codigoVuelo, tipoPasajero, estadoVuelo);
 			if(auxPassenger != NULL)
 			{
 				if(r == 7)
 				{
+					//printf("id: %d", auxPassenger->id);
 					ll_add(pArrayListPassenger, auxPassenger);
 					retorno = 0;
 				}

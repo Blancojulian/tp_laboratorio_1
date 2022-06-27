@@ -20,4 +20,7 @@ int utn_getText(char* pResultado, char* mensaje, char* mensajeError, int reinten
 int utn_getName(char* pResultado, char* mensaje, char* mensajeError, int reintentos, int len);
 int utn_getFlyCode(char* pResultado, char* mensaje, char* mensajeError, int reintentos, int len);
 
+int isFlyCode(char* cadena, int len);
+int isName(char* cadena, int len);
+
 #endif /* UTN_BIBLIOTECA_H_ */

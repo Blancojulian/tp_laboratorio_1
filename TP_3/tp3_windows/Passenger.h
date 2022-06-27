@@ -29,11 +29,12 @@ typedef struct
 	char nombre[LEN_STRING];
 	char apellido[LEN_STRING];
 	float precio;
-	int tipoPasajero;
 	char codigoVuelo[LEN_FLY_CODE];
+	int tipoPasajero;
 	int estadoVuelo;
-
 }Passenger;
+
+
 
 Passenger* Passenger_new();
 Passenger* Passenger_newParametros(char* idStr, char* nombreStr, char* apellidoStr, char* precioStr, char* codigoVueloStr, char* tipoPasajeroStr, char* estadoVueloStr);
@@ -68,10 +69,17 @@ int Passenger_getTextEstadoVueldo(int estadoVuelo, char* estadoVueloStr);
 
 int Passenger_printPassenger(Passenger* this);
 int Passenger_findById(LinkedList* pArrayListPassenger, int id, int* pIndex);
-int Passenger_modifyPassenger(Passenger* this);
+Passenger* Passenger_modifyPassenger(Passenger* this);
 int requestDataPassenger(Passenger* auxPassenger);
-int Passenger_findMaxId(LinkedList* pArrayListPassenger, int* pMaxId);;
+int Passenger_findMaxId(LinkedList* pArrayListPassenger, int* pMaxId);
+
+int Passenger_funcionCriterioId(void* this1, void* this2);
 int Passenger_funcionCriterioNombre(void* this1, void* this2);
+int Passenger_funcionCriterioApellido(void* this1, void* this2);
+int Passenger_funcionCriterioPrecio(void* this1, void* this2);
+int Passenger_funcionCriterioCodigoVuelo(void* this1, void* this2);
+int Passenger_funcionCriterioTipoPasajero(void* this1, void* this2);
+int Passenger_funcionCriterioEstadoVuelo(void* this1, void* this2);
 
 
 #endif /* PASSENGER_H_ */

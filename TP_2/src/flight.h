@@ -17,10 +17,9 @@
 #define CANCELADO 2
 #define DEMORADO 3
 
-#define LEN_ARRAY_TYPE_PASSENGER 3
-#define EJECUTIVA 1
-#define ECONOMICA 2
-#define TURISTA 3
+//#define LEN_ARRAY_TYPE_PASSENGER 3
+
+
 
 
 typedef struct{
@@ -29,19 +28,25 @@ typedef struct{
     int isEmpty;
 }Flight;
 
+/*
 typedef struct{
     int idTypePassenger;
     char description[LEN_STRING];
-}TypePassenger;
+}TypePassenger;*/
 
 int initFlight(Flight* list, int len);
 int requestDataFlight(Flight* auxFlight);
 int searchFreeIndexFlight(Flight* list, int len, int* pIndex);
 int modifyStatusFlight(Flight* list, int len, int index);
 int printFlights(Flight* list, int len);
-int findFlightByFlyCode(Flight* list, int len,char* flyCode);
+int findFlightByFlyCode(Flight* list, int len, char* flyCode);
+int findStatusFlightByFlyCode(Flight* list, int len,char* flyCode);
 int removeFlight(Flight* list, int len, char* flyCode);
-int addFlight(Flight* list, int len, int statusFlight, char flyCode[]);
+int addFlight(Flight* list, int len, int statusFlight, char* flyCode);
+
+int Flight_getTextEstadoVueldo(int estadoVuelo, char* estadoVueloStr);
+
+int Flight_altaForzada(Flight* list, int len, int statusFlight, char* flyCode);
 
 
 #endif /* FLIGHT_H_ */

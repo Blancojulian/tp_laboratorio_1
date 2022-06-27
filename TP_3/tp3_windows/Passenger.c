@@ -193,7 +193,7 @@ int Passenger_setCodigoVuelo(Passenger* this,char* codigoVuelo)
 	return retorno;
 }
 /**
- * \brief Lee un nombre.
+ * \brief Lee un codigo de vuelo.
  * \param Employee* this, Es el puntero al array.
  * \param char* nombre, Puntero al espacio de memoria.
  * \return (-1) Error / (0) Ok
@@ -368,7 +368,7 @@ int requestDataPassenger(Passenger* auxPassenger)
 			utn_getNumberFloat(&aux.precio, "\nIngrese el precio del viaje: ", "Precio invalido.\n", 1, 500000, CANT_REINTENTOS) == 0 &&
 			utn_getNumberInt(&aux.tipoPasajero, "\n1) FirstClass\n2) ExecutiveClass\n3) EconomyClass\nIngrese tipo de pasajero: ", "Tipo de pasajero invalido.\n", FIRST_CLASS, ECONOMYCLASS, CANT_REINTENTOS) == 0 &&
 			utn_getFlyCode(aux.codigoVuelo, "\nIngrese el codigo de vuelo (AA0000A): ", "Codigo de vuelo invalido.\n", CANT_REINTENTOS, LEN_FLY_CODE) == 0 &&
-			utn_getNumberInt(&aux.estadoVuelo, "\n1) \n1) Aterrizado\n2) En Horario\n3) En Vuelo\n4) Demorado\nIngrese estado de vuelo: ", "Estado de vuelo invalido.\n", ATERRIZADO, DEMORADO, CANT_REINTENTOS) == 0)
+			utn_getNumberInt(&aux.estadoVuelo, "\n1) Aterrizado\n2) En Horario\n3) En Vuelo\n4) Demorado\nIngrese estado de vuelo: ", "Estado de vuelo invalido.\n", ATERRIZADO, DEMORADO, CANT_REINTENTOS) == 0)
 		{
 		    //aux.id = generateNewId();
 			*auxPassenger = aux;
@@ -403,6 +403,7 @@ Passenger* Passenger_newParametros(char* idStr, char* nombreStr, char* apellidoS
 	Passenger* this = Passenger_new();
 	int auxTipoPasajero;
 	int auxEstadoVuelo;
+	//printf("%s,%s,%s,%s",idStr, codigoVueloStr, tipoPasajeroStr,estadoVueloStr);
 
 	if(this != NULL && isInt(idStr, LONG_BUFFER) && isFloat(precioStr, LONG_BUFFER)&&
 			Passenger_getIntTipoPasajero(tipoPasajeroStr, &auxTipoPasajero) == 0 &&
@@ -411,17 +412,17 @@ Passenger* Passenger_newParametros(char* idStr, char* nombreStr, char* apellidoS
 			Passenger_setNombre(this, nombreStr) == 0 &&
 			Passenger_setApellido(this, apellidoStr) == 0 &&
 			Passenger_setPrecio(this, atof(precioStr)) == 0 &&
-			Passenger_setCodigoVuelo(this, codigoVueloStr) == 0 &&
+			Passenger_setCodigoVuelo(this, codigoVueloStr) == 0 &&//hay un error en setCodigo
 			Passenger_setTipoPasajero(this, auxTipoPasajero) == 0 &&
 			Passenger_setEstadoVuelo(this, auxEstadoVuelo) == 0)
 	{
-
+		//printf("aux tipo pasajero: %d, %s\n",auxTipoPasajero, tipoPasajeroStr);
 	}
-	/*else
+	else
 	{
 		Passenger_delete(this);
 		this = NULL;
-	}*/
+	}
 
 	return this;
 }
@@ -450,11 +451,11 @@ Passenger* Passenger_newParametros_types(int id, char* nombreStr, char* apellido
 	{
 
 	}
-	/*else
+	else
 	{
 		Passenger_delete(this);
 		this = NULL;
-	}*/
+	}
 
 	return this;
 }
@@ -481,6 +482,7 @@ int Passenger_printPassenger(Passenger* this)
 	char auxTipoPasajero[LEN_STRING];
 	char auxEstadoVuelo[LEN_STRING];
 	Passenger auxPassenger;
+
 	if( this != NULL && Passenger_getId(this, &auxPassenger.id) == 0 &&
 		Passenger_getNombre(this, auxPassenger.nombre) == 0 &&
 		Passenger_getApellido(this, auxPassenger.apellido) == 0 &&
@@ -530,16 +532,29 @@ int Passenger_findById(LinkedList* pArrayListPassenger, int id, int* pIndex)
 	return retorno;
 }
 /*
- * \brief MOdifica los datos de un pasajero por campos.
+ * \brief Modifica los datos de un auxiliar pasajero por campos y devuelve puntero al espacio de memoria del pasajero.
  * \param Passenger* this, Es el puntero al espacio de memoria del pasajero.
  */
-int Passenger_modifyPassenger(Passenger* this)
+Passenger* Passenger_modifyPassenger(Passenger* this)
 {
-	int retorno = -1;
 	int option;
-	Passenger auxPassenger;
+	Passenger auxParams;
+	Passenger* auxPassenger = Passenger_new();
 
-	if(this != NULL)
+	if(this != NULL && auxPassenger != NULL && Passenger_getId(this, &auxParams.id) == 0 &&//getters
+			Passenger_getNombre(this, auxParams.nombre) == 0 &&
+			Passenger_getApellido(this, auxParams.apellido) == 0 &&
+			Passenger_getPrecio(this, &auxParams.precio) == 0 &&
+			Passenger_getCodigoVuelo(this, auxParams.codigoVuelo) == 0 &&
+			Passenger_getEstadoVuelo(this, &auxParams.estadoVuelo) == 0 &&
+			Passenger_getTipoPasajero(this, &auxParams.tipoPasajero) == 0 &&
+			Passenger_setId(auxPassenger, auxParams.id) == 0 && //setters
+			Passenger_setNombre(auxPassenger, auxParams.nombre) == 0 &&
+			Passenger_setApellido(auxPassenger, auxParams.apellido) == 0 &&
+			Passenger_setPrecio(auxPassenger, auxParams.precio) == 0 &&
+			Passenger_setCodigoVuelo(auxPassenger, auxParams.codigoVuelo) == 0 &&
+			Passenger_setEstadoVuelo(auxPassenger, auxParams.estadoVuelo) == 0 &&
+			Passenger_setTipoPasajero(auxPassenger, auxParams.tipoPasajero) == 0 )
 	{
 		do{
 			if(utn_getNumberInt(&option,"\n1) Modificar Nombre"
@@ -554,39 +569,39 @@ int Passenger_modifyPassenger(Passenger* this)
 				switch(option)
 				{
 					case 1:
-						if(utn_getName(auxPassenger.nombre, "\nIngrese el nombre del pasajero: ", "Nombre invalido.\n", CANT_REINTENTOS, LEN_STRING) == 0)
+						if(utn_getName(auxParams.nombre, "\nIngrese el nombre del pasajero: ", "Nombre invalido.\n", CANT_REINTENTOS, LEN_STRING) == 0)
 						{
-							Passenger_setNombre(this, auxPassenger.nombre);
+							Passenger_setNombre(auxPassenger, auxParams.nombre);
 						}
 						break;
 					case 2:
-						if(utn_getName(auxPassenger.apellido, "\nIngrese el apellido del pasajero: ", "Apellido invalido.\n", CANT_REINTENTOS, LEN_STRING) == 0)
+						if(utn_getName(auxParams.apellido, "\nIngrese el apellido del pasajero: ", "Apellido invalido.\n", CANT_REINTENTOS, LEN_STRING) == 0)
 						{
-							Passenger_setApellido(this, auxPassenger.apellido);
+							Passenger_setApellido(auxPassenger, auxParams.apellido);
 						}
 						break;
 					case 3:
-						if(utn_getNumberFloat(&auxPassenger.precio, "\nIngrese el precio del viaje: ", "Precio invalido.\n", 1, 500000, CANT_REINTENTOS) == 0)
+						if(utn_getNumberFloat(&auxParams.precio, "\nIngrese el precio del viaje: ", "Precio invalido.\n", 1, 500000, CANT_REINTENTOS) == 0)
 						{
-							Passenger_setPrecio(this, auxPassenger.precio);
+							Passenger_setPrecio(auxPassenger, auxParams.precio);
 						}
 						break;
 					case 4:
-						if(utn_getNumberInt(&auxPassenger.tipoPasajero, "\n1) FirstClass\n2) ExecutiveClass\n3) EconomyClass\nIngrese tipo de pasajero: ", "Tipo de pasajero invalido.\n", FIRST_CLASS, ECONOMYCLASS, CANT_REINTENTOS) == 0)
+						if(utn_getNumberInt(&auxParams.tipoPasajero, "\n1) FirstClass\n2) ExecutiveClass\n3) EconomyClass\nIngrese tipo de pasajero: ", "Tipo de pasajero invalido.\n", FIRST_CLASS, ECONOMYCLASS, CANT_REINTENTOS) == 0)
 						{
-							Passenger_setCodigoVuelo(this, auxPassenger.codigoVuelo);
+							Passenger_setCodigoVuelo(auxPassenger, auxParams.codigoVuelo);
 						}
 						break;
 					case 5:
-						if(utn_getFlyCode(auxPassenger.codigoVuelo, "\nIngrese el codigo de vuelo (AA0000A): ", "Codigo de vuelo invalido.\n", CANT_REINTENTOS, LEN_FLY_CODE) == 0)
+						if(utn_getFlyCode(auxParams.codigoVuelo, "\nIngrese el codigo de vuelo (AA0000A): ", "Codigo de vuelo invalido.\n", CANT_REINTENTOS, LEN_FLY_CODE) == 0)
 						{
-							Passenger_setCodigoVuelo(this, auxPassenger.codigoVuelo);
+							Passenger_setCodigoVuelo(auxPassenger, auxParams.codigoVuelo);
 						}
 						break;
 					case 6:
-						if(utn_getNumberInt(&auxPassenger.estadoVuelo, "\n1) \n1) Aterrizado\n2) En Horario\n3) En Vuelo\n4) Demorado\nIngrese estado de vuelo: ", "Estado de vuelo invalido.\n", ATERRIZADO, DEMORADO, CANT_REINTENTOS) == 0)
+						if(utn_getNumberInt(&auxParams.estadoVuelo, "\n1) \n1) Aterrizado\n2) En Horario\n3) En Vuelo\n4) Demorado\nIngrese estado de vuelo: ", "Estado de vuelo invalido.\n", ATERRIZADO, DEMORADO, CANT_REINTENTOS) == 0)
 						{
-							Passenger_setEstadoVuelo(this, auxPassenger.estadoVuelo);
+							Passenger_setEstadoVuelo(auxPassenger, auxParams.estadoVuelo);
 						}
 						break;
 				}
@@ -597,10 +612,13 @@ int Passenger_modifyPassenger(Passenger* this)
 				break;
 			}
 		}while(option != 7);
-		retorno = 0;
+	}
+	else
+	{
+		auxPassenger = NULL;
 	}
 
-	return retorno;
+	return auxPassenger;
 }
 
 /**
@@ -635,9 +653,38 @@ int Passenger_findMaxId(LinkedList* pArrayListPassenger, int* pMaxId)
 	}
 	return retorno;
 }
-
 /**
- * \brief Criterio para ordenar la lista
+ * \brief Criterio para ordenar la lista, ordena por tipo de Pasajero
+ * \param void* this1, puntero al espacio de memoria.
+ * \param void* this2, puntero al espacio de memoria.
+ * \return Retorna el criterio con el que se ordenara la lista.
+ */
+int Passenger_funcionCriterioId(void* this1, void* this2)
+{
+
+	int retorno = 0;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
+	int auxId1;
+	int auxId2;
+
+	if(this1 != NULL && this2 != NULL &&
+		Passenger_getId(auxPas1, &auxId1) == 0 &&
+		Passenger_getId(auxPas2, &auxId2) == 0)
+	{
+		if(auxId1 > auxId2)
+		{
+			retorno = 1;
+		}
+		else if(auxId1 < auxId2)
+		{
+			retorno = -1;
+		}
+	}
+	return retorno;
+}
+/**
+ * \brief Criterio para ordenar la lista, ordena por nombre
  * \param void* this1, puntero al espacio de memoria.
  * \param void* this2, puntero al espacio de memoria.
  * \return Retorna el criterio con el que se ordenara la lista.
@@ -645,23 +692,189 @@ int Passenger_findMaxId(LinkedList* pArrayListPassenger, int* pMaxId)
 int Passenger_funcionCriterioNombre(void* this1, void* this2)
 {
 	int retorno = 0;
-	Passenger* auxEmp1 = (Passenger*)this1;
-	Passenger* auxEmp2 = (Passenger*)this2;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
 	char bufferNombre1[LEN_STRING];
 	char bufferNombre2[LEN_STRING];
 
+	//printf("\ndentro de comparar nombre\n");
 	if(this1 != NULL && this2 != NULL &&
-		Passenger_getNombre(auxEmp1, bufferNombre1) == 0 &&
-		Passenger_getNombre(auxEmp2, bufferNombre2) == 0)
+		Passenger_getNombre(auxPas1, bufferNombre1) == 0 &&
+		Passenger_getNombre(auxPas2, bufferNombre2) == 0)
 	{
-		if(strcmp(bufferNombre1,bufferNombre2) < 0)
+		//printf("\ndentro de strcmp\n");
+		//printf("\nnombre1: %s\n",bufferNombre1);
+		//printf("\nid1: %d\n",auxEmp1->id);
+		 retorno = strcmp(bufferNombre1,bufferNombre2);
+	}
+	//printf("\ndespues del if\n");
+	return retorno;
+}
+/**
+ * \brief Criterio para ordenar la lista, ordena por nombre
+ * \param void* this1, puntero al espacio de memoria.
+ * \param void* this2, puntero al espacio de memoria.
+ * \return Retorna el criterio con el que se ordenara la lista.
+ */
+int Passenger_funcionCriterioApellido(void* this1, void* this2)
+{
+	int retorno = 0;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
+	char auxApellido1[LEN_STRING];
+	char auxApellido2[LEN_STRING];
+
+
+	if(this1 != NULL && this2 != NULL &&
+		Passenger_getApellido(auxPas1, auxApellido1) == 0 &&
+		Passenger_getApellido(auxPas2, auxApellido2) == 0)
+	{
+		 retorno = strcmp(auxApellido1,auxApellido2);
+	}
+	return retorno;
+}
+/**
+ * \brief Criterio para ordenar la lista, ordena por precio
+ * \param void* this1, puntero al espacio de memoria.
+ * \param void* this2, puntero al espacio de memoria.
+ * \return Retorna el criterio con el que se ordenara la lista.
+ */
+int Passenger_funcionCriterioPrecio(void* this1, void* this2)
+{
+
+	int retorno = 0;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
+	float auxPrecio1;
+	float auxPrecio2;
+
+	if(this1 != NULL && this2 != NULL &&
+		Passenger_getPrecio(auxPas1, &auxPrecio1) == 0 &&
+		Passenger_getPrecio(auxPas2, &auxPrecio2) == 0)
+	{
+		if(auxPrecio1 > auxPrecio2)
 		{
 			retorno = 1;
 		}
-		else
+		else if(auxPrecio1 < auxPrecio2)
 		{
 			retorno = -1;
 		}
 	}
 	return retorno;
 }
+/**
+ * \brief Criterio para ordenar la lista, ordena por nombre
+ * \param void* this1, puntero al espacio de memoria.
+ * \param void* this2, puntero al espacio de memoria.
+ * \return Retorna el criterio con el que se ordenara la lista.
+ */
+int Passenger_funcionCriterioCodigoVuelo(void* this1, void* this2)
+{
+	int retorno = 0;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
+	char auxCodigoVuelo1[LEN_FLY_CODE];
+	char auxCodigoVuelo2[LEN_FLY_CODE];
+
+
+	if(this1 != NULL && this2 != NULL &&
+		Passenger_getCodigoVuelo(auxPas1, auxCodigoVuelo1) == 0 &&
+		Passenger_getCodigoVuelo(auxPas2, auxCodigoVuelo2) == 0)
+	{
+		 retorno = strcmp(auxCodigoVuelo1, auxCodigoVuelo2);
+	}
+	return retorno;
+}
+/**
+ * \brief Criterio para ordenar la lista, ordena por tipo de Pasajero
+ * \param void* this1, puntero al espacio de memoria.
+ * \param void* this2, puntero al espacio de memoria.
+ * \return Retorna el criterio con el que se ordenara la lista.
+ */
+int Passenger_funcionCriterioTipoPasajero(void* this1, void* this2)
+{
+
+	int retorno = 0;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
+	int auxTipoPasajero1;
+	int auxTipoPasajero2;
+
+	if(this1 != NULL && this2 != NULL &&
+		Passenger_getTipoPasajero(auxPas1, &auxTipoPasajero1) == 0 &&
+		Passenger_getTipoPasajero(auxPas2, &auxTipoPasajero2) == 0)
+	{
+		if(auxTipoPasajero1 > auxTipoPasajero2)
+		{
+			retorno = 1;
+		}
+		else if(auxTipoPasajero1 < auxTipoPasajero2)
+		{
+			retorno = -1;
+		}
+	}
+	return retorno;
+}
+/**
+ * \brief Criterio para ordenar la lista, ordena por tipo de Pasajero
+ * \param void* this1, puntero al espacio de memoria.
+ * \param void* this2, puntero al espacio de memoria.
+ * \return Retorna el criterio con el que se ordenara la lista.
+ */
+int Passenger_funcionCriterioEstadoVuelo(void* this1, void* this2)
+{
+
+	int retorno = 0;
+	Passenger* auxPas1 = (Passenger*)this1;
+	Passenger* auxPas2 = (Passenger*)this2;
+	int auxEstadoVuelo1;
+	int auxEstadoVuelo2;
+
+	if(this1 != NULL && this2 != NULL &&
+		Passenger_getEstadoVuelo(auxPas1, &auxEstadoVuelo1) == 0 &&
+		Passenger_getEstadoVuelo(auxPas2, &auxEstadoVuelo2) == 0)
+	{
+		if(auxEstadoVuelo1 > auxEstadoVuelo2)
+		{
+			retorno = 1;
+		}
+		else if(auxEstadoVuelo1 < auxEstadoVuelo2)
+		{
+			retorno = -1;
+		}
+	}
+	return retorno;
+}
+/**
+ * \brief Encuentra el estado de vuelo del codigo de vuelo.
+ * \param LinkedList* pArrayListPassenger, Es el puntero al array.
+ * \param int* pEstadoVuelo, puntero al espacio de memmoria donde se encuentra el estado de vuelo.
+ * \return (-1) Error / (0) Ok
+ */
+int Passenger_findEstadoVuelo(LinkedList* pArrayListPassenger,char* codigoVuelo, int* pEstadoVuelo)
+{
+	int retorno = -1;
+	Passenger* auxPassenger;
+	int len = ll_len(pArrayListPassenger);
+	int auxEstadoVuelo;
+	char auxCodigoVuelo[LEN_FLY_CODE];
+	int i;
+
+	if(pArrayListPassenger != NULL && pEstadoVuelo != NULL)
+	{
+		for (i = 0; i < len; i++)
+		{
+			auxPassenger = ll_get(pArrayListPassenger, i);
+			if(auxPassenger != NULL && Passenger_getCodigoVuelo(auxPassenger, auxCodigoVuelo) == 0 &&
+				strncmp(codigoVuelo, auxCodigoVuelo, LEN_FLY_CODE) == 0 && Passenger_getEstadoVuelo(auxPassenger, &auxEstadoVuelo) == 0)
+			{
+				*pEstadoVuelo = auxEstadoVuelo;
+				retorno = 0;
+				break;
+			}
+		}
+	}
+	return retorno;
+}
+

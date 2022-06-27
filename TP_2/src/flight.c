@@ -6,7 +6,8 @@
  */
 
 
-
+#include <string.h>
+#include <ctype.h>
 #include "flight.h"
 #include "utn_biblioteca.h"
 #define CANT_REINTENTOS 2
@@ -128,23 +129,8 @@ int printFlights(Flight* list, int len)
 	{
 		for (i = 0; i < len; i++)
 		{
-			if(list[i].isEmpty == 0)
+			if(list[i].isEmpty == 0 && Flight_getTextEstadoVueldo(list[i].statusFlight, auxStatus) == 0)
 			{
-			    switch(list[i].statusFlight)
-			    {
-			        case ACTIVO:
-    			        strncpy(auxStatus,"Activo",LEN_STRING);
-    			        break;
-			        case CANCELADO:
-    			        strncpy(auxStatus,"Cancelado",LEN_STRING);
-    			        break;
-			        case DEMORADO:
-    			        strncpy(auxStatus,"Demorado",LEN_STRING);
-    			        break;
-			        default:
-			            strncpy(auxStatus,"Error, estado invalido",LEN_STRING);
-    			        break;
-			    }
 				printf( "Codigo de vuelo: %s - Estado de vuelo: %d)%s.\n"
 						,list[i].flyCode , list[i].statusFlight, auxStatus);
 			}
@@ -153,7 +139,6 @@ int printFlights(Flight* list, int len)
 	}
 	return retorno;
 }
-
 /**
  * \brief Busca el empleado por id y retorna su indice.
  * \param Flight* list, Es el puntero al array de vuelos
@@ -173,6 +158,32 @@ int findFlightByFlyCode(Flight* list, int len, char* flyCode)
             if(strncmp(list[i].flyCode, flyCode, LEN_FLY_CODE) == 0)
             {
                 retorno = i;
+                break;
+            }
+            i++;
+        }
+    }
+    return retorno;
+}
+/**
+ * \brief Busca el empleado por id y retorna su indice.
+ * \param Flight* list, Es el puntero al array de vuelos
+ * \param int len, es el limite de array.
+ * \param char* flyCode, codigo de vuelo que será buscado.
+ * \return Retorna el indice
+ */
+int findStatusFlightByFlyCode(Flight* list, int len, char* flyCode)
+{
+    int retorno = -1;
+
+    if(list != NULL && len > 0 && flyCode != NULL)
+    {
+        int i = 0;
+        while(i < len)
+        {
+            if(strncmp(list[i].flyCode, flyCode, LEN_FLY_CODE) == 0)
+            {
+                retorno = list[i].statusFlight;
                 break;
             }
             i++;
@@ -220,6 +231,96 @@ int addFlight(Flight* list, int len, int statusFlight, char flyCode[])
         {
             list[index].statusFlight = statusFlight;
             strncpy(list[index].flyCode, flyCode, LEN_FLY_CODE);
+            list[index].isEmpty = 0;
+
+            retorno = 0;
+        }
+        else
+		{
+			printf("No hay espacios libres para dar de alta.");
+		}
+    }
+
+    return retorno;
+}
+
+/**
+ * \brief Controla si el array tiene vuelos cargados.
+ * \param Flight* list, Es el puntero al array de vuelos.
+ * \param int len, es el limite de array.
+ * \return (1) true, esta vacio / (0) false, tiene pasajeros cargados
+ */
+int isEmptyArrayFlights(Flight* list, int len)
+{
+	int retorno = 1;
+	int i = 0;
+
+	if (list != NULL && len > 0)
+	{
+	    while(i < len)
+	    {
+	        if(list[i].isEmpty == 0)
+			{
+				retorno = 0;
+				break;
+			}
+			i++;
+	    }
+	}
+	return retorno;
+}
+
+
+
+int Flight_getTextEstadoVueldo(int estadoVuelo, char* estadoVueloStr)
+{
+	int retorno = -1;
+
+	if((estadoVuelo >= ACTIVO && estadoVuelo <= DEMORADO) && estadoVueloStr != NULL)
+	{
+		switch(estadoVuelo)
+		{
+			case ACTIVO:
+				strncpy(estadoVueloStr, "Activo", LEN_STRING);
+				retorno = 0;
+				break;
+			case CANCELADO:
+				strncpy(estadoVueloStr, "Cancelado", LEN_STRING);
+				retorno = 0;
+				break;
+			case DEMORADO:
+				strncpy(estadoVueloStr, "Demorado", LEN_STRING);
+				retorno = 0;
+				break;
+		}
+	}
+	return retorno;
+}
+
+
+/**
+ * \brief Realiza el alta de un vuelo solo si el indice corresponde a un espacio vacio (isEmpty == 1)
+ * \param Flight* list, Es el puntero al array de vuelos.
+ * \param int len, es el limite de array.
+ * \param int statusFlight, indica el estado del vuelo.
+ * \param char flycode[], indica el codigo del vuelo, "AAA-000000".
+ * \return (-1) Error / (0) Ok
+ */
+int Flight_altaForzada(Flight* list, int len, int statusFlight, char* flyCode)
+{
+    int retorno = -1;
+    int index;
+    char auxStr[LEN_FLY_CODE];
+    strncpy(auxStr, flyCode, LEN_FLY_CODE);
+    //"BBA-123456"
+
+    if(list != NULL && len > 0 && statusFlight >= ACTIVO && statusFlight <= DEMORADO &&
+    	flyCode != NULL && isFlyCode(auxStr, LEN_FLY_CODE) == 1)
+    {
+        if(searchFreeIndexFlight(list, len, &index) == 0 && index < len)
+        {
+            list[index].statusFlight = statusFlight;
+            strncpy(list[index].flyCode, auxStr, LEN_FLY_CODE);
             list[index].isEmpty = 0;
 
             retorno = 0;

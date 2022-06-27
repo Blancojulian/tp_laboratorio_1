@@ -10,12 +10,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+
 #include "arrayPassenger.h"
 
 #define OPTION_MENU 5
-#define OPTION_REPORT 3
-#define OPTION_MODIFY 4
 
-void showMenu(int* pOptionMenu, int* pOptionReport, int* pOptionModify, Passenger* list, int len);
+void showMenu(int* pOption, Passenger* list, int len);
 
 #endif /* MENU_H_ */

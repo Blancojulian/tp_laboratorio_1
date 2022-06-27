@@ -14,8 +14,8 @@ static int isInt(char* cadena, int limite);
 static int getFloat(float* cadena);
 static int isFloat(char* cadena, int limite);
 static int getText(char* pResultado, int len);
-static int isName(char* cadena, int len);
-static int isFlyCode(char* cadena, int len);
+//static int isName(char* cadena, int len);
+//static int isFlyCode(char* cadena, int len);
 
 
 /**
@@ -280,7 +280,7 @@ int utn_getText(char *pResultado, char *mensaje, char *mensajeError, int reinten
  * \ param - int limite, indica la cantidad de numeros maximas de la cadena.
  * \ return - (1) Indica que es un nombre valido / (0) Indica que no es un nombre valido.
  */
-static int isName(char* cadena, int len)
+int isName(char* cadena, int len)
 {
     int retorno = 1;
     int i = 0;
@@ -348,7 +348,7 @@ int utn_getName(char* pResultado, char* mensaje, char* mensajeError, int reinten
  * \ param - int limite, indica la cantidad de numeros maximas de la cadena.
  * \ return - (1) Indica que es un nombre valido / (0) Indica que no es un nombre valido.
  */
-static int isFlyCode(char* cadena, int len)
+int isFlyCode(char* cadena, int len)
 {
     int retorno = 1;
     int i = 0;
