@@ -187,10 +187,11 @@ int controller_ListPassenger(LinkedList* pArrayListPassenger)
 	int i;
 	Passenger* auxPassenger;
 
-	len = ll_len(pArrayListPassenger);
 
-	if(pArrayListPassenger != NULL && len > 0)
+	if(pArrayListPassenger != NULL && ll_isEmpty(pArrayListPassenger) == 0)
 	{
+		len = ll_len(pArrayListPassenger);
+
 		printf("\nID\t|\tNombre\t|\tApellido\t|\tPrecio\t|\tTipo de pasajero\t|\tCodigo de vuelo\t|\tEstado de vuelo\n");
 		for (i = 0; i < len; i++)
 		{
@@ -200,6 +201,7 @@ int controller_ListPassenger(LinkedList* pArrayListPassenger)
 				Passenger_printPassenger(auxPassenger);
 			}
 		}
+		retorno = 0;
 	}
 	return retorno;
 }
@@ -357,4 +359,26 @@ int controller_saveAsBinary(char* path , LinkedList* pArrayListPassenger)
 	return retorno;
 }
 
+int controller_clearList(LinkedList* pArrayListPassenger)
+{
+	int retorno = -1;
+	int len;
+	int i;
+	Passenger* auxPassenger;
 
+	if(pArrayListPassenger != NULL)
+	{
+		len = ll_len(pArrayListPassenger);
+
+		for (i = 0; i < len; i++)
+		{
+			auxPassenger = (Passenger*)ll_get(pArrayListPassenger, i);
+			Passenger_delete(auxPassenger);
+		}
+		ll_clear(pArrayListPassenger);
+		printf("\ncontroller_clearList len: %d", len);
+		retorno = 0;
+	}
+	printf("\n%d\n", retorno);
+	return retorno;
+}

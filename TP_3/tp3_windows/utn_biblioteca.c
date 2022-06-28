@@ -659,7 +659,16 @@ int utn_modifyDateByField(Fecha* pFecha, int field, char *mensaje, char *mensaje
 	}
 	return retorno;
 }
-
+/*
+ * \ brief - Solicita una fecha al usuario y, luego de verificarlo, devuelve el resultado.
+ * \ param - char* mensaje, Mensaje a ser mostrado al usuario para solicitarle el dato.
+ * \ param - char* mensajeError, Mensaje a ser mostrado al usuario para indicarle que el valor ingresado no es correcto.
+ * \ param - Fecha* pFecha, Puntero al espacio de memoria donde se dejara el valor obtenido.
+ * \ param - int reintentos, Cantidad de oportunidades para ingresar el dato.
+ * \ param - int minimo, valor minimo admitido.
+ * \ param - int maximo, valor maximo admitido.
+ * \ return - (-1) en caso de error / (0) en caso de funcionar.
+ */
 static int getDateByField(Fecha* pFecha, int field, int reintentos)
 {
 	int retorno = -1;
@@ -673,5 +682,47 @@ static int getDateByField(Fecha* pFecha, int field, int reintentos)
 		*pFecha = auxFecha;
 		retorno = 0;
 	}
+	return retorno;
+}
+
+/*
+ * \ brief - Solicita una una respuesta al usuario entre s/n y, luego de verificarlo, devuelve el verdadero o falso.
+ * \ param - char* mensaje, Mensaje a ser mostrado al usuario para solicitarle el dato.
+ * \ param - char* mensajeError, Mensaje a ser mostrado al usuario para indicarle que el valor ingresado no es correcto.
+ * \ param - int reintentos, Cantidad de oportunidades para ingresar el dato.
+ * \ return - (-1) en caso de error / (0) falso, en caso de n / (1) verdadero, en caso de s.
+ */
+int getConfirm(char* mensaje, char* mensajeError, int reintentos)
+{
+	int retorno = -1;
+	char buffer;
+
+	if(mensaje != NULL && mensajeError != NULL)
+	{
+		do
+		{
+			printf("%s (s/n): ", mensaje);
+			fflush(stdin);
+			if(myGets(&buffer, sizeof(buffer))==0 && (buffer == 's' || buffer == 'n'))
+			{
+				if(buffer == 's')
+				{
+					retorno = 1;
+					break;
+				}
+				else if(buffer == 'n')
+				{
+					retorno = 0;
+					break;
+				}
+			}
+			else
+			{
+				printf("%s",mensajeError);
+				reintentos--;
+			}
+		}while(reintentos >= 0);
+	}
+	printf("\n%d\n", retorno);
 	return retorno;
 }

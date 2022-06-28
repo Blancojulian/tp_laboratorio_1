@@ -35,4 +35,6 @@ int isFlyCode(char* cadena, int len);
 int isInt(char* cadena, int limite);
 int isFloat(char* cadena, int limite);
 
+int getConfirm(char* mensaje, char* mensajeError, int reintentos);
+
 #endif /* UTN_BIBLIOTECA_H_ */
